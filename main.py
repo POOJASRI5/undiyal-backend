@@ -1,0 +1,47 @@
+from fastapi import FastAPI, Depends
+from sqlalchemy.orm import Session
+
+from database import SessionLocal, engine
+import models
+from schemas import UserCreate, UserLogin
+from auth import create_user, authenticate_user
+
+models.Base.metadata.create_all(bind=engine)
+
+app = FastAPI()
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+# Signup
+@app.post("/auth/register")
+def register(user: UserCreate, db: Session = Depends(get_db)):
+    created_user = create_user(db, user)
+    if not created_user:
+        return {"message": "User already exists"}
+    return {
+        "message": "success",
+        "user_id": created_user.id,
+        "email": created_user.email
+    }
+
+# Login
+@app.post("/auth/login")
+def login(user: UserLogin, db: Session = Depends(get_db)):
+    authenticated_user = authenticate_user(db, user.email, user.password)
+    if not authenticated_user:
+        return {"message": "Invalid email or password"}
+
+    return {
+        "message": "success",
+        "user_id": authenticated_user.id,
+        "email": authenticated_user.email
+    }
+
+@app.get("/")
+def root():
+    return {"message": "Backend is running"}
