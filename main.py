@@ -8,6 +8,7 @@ from auth import create_user, authenticate_user
 
 # models.Base.metadata.create_all(bind=engine)
 
+
 app = FastAPI()
 
 def get_db():
