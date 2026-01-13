@@ -6,7 +6,7 @@ import models
 from schemas import UserCreate, UserLogin
 from auth import create_user, authenticate_user
 
-models.Base.metadata.create_all(bind=engine)
+# models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
