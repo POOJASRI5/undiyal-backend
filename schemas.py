@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-
+from pydantic import BaseModel
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
@@ -10,3 +10,8 @@ class UserCreate(BaseModel):
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+class ExpenseCreate(BaseModel):
+    user_email: str
+    amount: float
+    category: str
+    source: str

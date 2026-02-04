@@ -5,6 +5,11 @@ from database import SessionLocal, engine
 import models
 from schemas import UserCreate, UserLogin
 from auth import create_user, authenticate_user
+from database import engine
+from models import Base
+from models import Expense
+from schemas import ExpenseCreate
+
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -46,3 +51,19 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
 @app.get("/")
 def root():
     return {"message": "Backend is running"}
+
+@app.post("/expenses")
+def add_expense(expense: ExpenseCreate, db: Session = Depends(get_db)):
+    new_expense = Expense(
+        user_email=expense.user_email,
+        amount=expense.amount,
+        category=expense.category,
+        source=expense.source
+    )
+    db.add(new_expense)
+    db.commit()
+    db.refresh(new_expense)
+    return {"message": "Expense added successfully"}
+
+Base.metadata.create_all(bind=engine)
+
