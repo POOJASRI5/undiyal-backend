@@ -10,7 +10,6 @@ from models import Base
 from models import Expense
 from schemas import ExpenseCreate
 
-
 models.Base.metadata.create_all(bind=engine)
 
 
@@ -64,6 +63,15 @@ def add_expense(expense: ExpenseCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_expense)
     return {"message": "Expense added successfully"}
+
+@app.get("/expenses")
+def get_expenses(user_email: str, db: Session = Depends(get_db)):
+    expenses = db.query(Expense).filter(
+        Expense.user_email == user_email
+    ).all()
+
+    return expenses
+
 
 Base.metadata.create_all(bind=engine)
 
