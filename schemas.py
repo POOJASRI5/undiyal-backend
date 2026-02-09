@@ -14,4 +14,9 @@ class ExpenseCreate(BaseModel):
     user_email: str
     amount: float
     category: str
+    merchant_name: str
+    invoice_date: str
+    payment_mode: str
+    paid_status: str
+    notes: str
     source: str

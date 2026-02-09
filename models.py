@@ -18,7 +18,16 @@ class Expense(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_email = Column(String, index=True)
+
     amount = Column(Float)
     category = Column(String)
-    source = Column(String)  # SMS / OCR / MANUAL
+    merchant_name = Column(String)
+    invoice_date = Column(String)
+
+    payment_mode = Column(String)
+    paid_status = Column(String)
+
+    notes = Column(String)
+    source = Column(String)
+
     created_at = Column(DateTime, default=datetime.utcnow)

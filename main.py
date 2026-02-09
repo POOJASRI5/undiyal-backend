@@ -21,6 +21,7 @@ def get_db():
         yield db
     finally:
         db.close()
+        
 
 # Signup
 @app.post("/auth/register")
@@ -57,12 +58,21 @@ def add_expense(expense: ExpenseCreate, db: Session = Depends(get_db)):
         user_email=expense.user_email,
         amount=expense.amount,
         category=expense.category,
+        merchant_name=expense.merchant_name,
+        invoice_date=expense.invoice_date,
+        payment_mode=expense.payment_mode,
+        paid_status=expense.paid_status,
+        notes=expense.notes,
         source=expense.source
     )
+
     db.add(new_expense)
     db.commit()
     db.refresh(new_expense)
+
     return {"message": "Expense added successfully"}
+
+
 
 @app.get("/expenses")
 def get_expenses(user_email: str, db: Session = Depends(get_db)):
