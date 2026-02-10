@@ -10,7 +10,7 @@ from models import Base
 from models import Expense
 from schemas import ExpenseCreate
 
-models.Base.metadata.create_all(bind=engine)
+models.Base.metadata.create_all(bind=engine)  
 
 
 app = FastAPI()
