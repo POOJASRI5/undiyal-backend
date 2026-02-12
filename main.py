@@ -1,6 +1,7 @@
+from PIL import Image
+import io
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-
 from database import SessionLocal, engine
 import models
 from schemas import UserCreate, UserLogin
@@ -82,7 +83,8 @@ def add_expense(expense: ExpenseCreate, db: Session = Depends(get_db)):
 
 @app.post("/test-gemini")
 async def test_gemini(file: UploadFile = File(...)):
-    image = await file.read()
+    image_bytes = await file.read()
+    image = Image.open(io.BytesIO(image_bytes))
 
     response = model.generate_content([
         "Extract bill details",
