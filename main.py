@@ -9,9 +9,17 @@ from database import engine
 from models import Base
 from models import Expense
 from schemas import ExpenseCreate
+import os
+import google.generativeai as genai
+from dotenv import load_dotenv 
+from gemini_service import model
+from fastapi import UploadFile, File
+
+
+
+load_dotenv()
 
 models.Base.metadata.create_all(bind=engine)  
-
 
 app = FastAPI()
 
@@ -72,6 +80,17 @@ def add_expense(expense: ExpenseCreate, db: Session = Depends(get_db)):
 
     return {"message": "Expense added successfully"}
 
+@app.post("/test-gemini")
+async def test_gemini(file: UploadFile = File(...)):
+    image = await file.read()
+
+    response = model.generate_content([
+        "Extract bill details",
+        image
+    ])
+
+    return {"result": response.text}
+
 
 
 @app.get("/expenses")
@@ -83,5 +102,5 @@ def get_expenses(user_email: str, db: Session = Depends(get_db)):
     return expenses
 
 
-Base.metadata.create_all(bind=engine)
+
 
