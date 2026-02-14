@@ -11,9 +11,7 @@ from models import Base
 from models import Expense
 from schemas import ExpenseCreate
 import os
-import google.generativeai as genai
 from dotenv import load_dotenv 
-from gemini_service import model
 from fastapi import UploadFile, File
 from gemini_service import extract_from_image
 
