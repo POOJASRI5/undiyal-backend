@@ -1,6 +1,9 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime
 from database import Base
 from datetime import datetime
+from sqlalchemy import Column, Integer, String, Float
+from database import Base
+
 
 class User(Base):
     __tablename__ = "users"
@@ -31,3 +34,11 @@ class Expense(Base):
     source = Column(String)
 
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class Budget(Base):
+    __tablename__ = "budgets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_email = Column(String, index=True)
+    monthly_budget = Column(Float)

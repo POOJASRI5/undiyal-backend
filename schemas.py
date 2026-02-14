@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from pydantic import BaseModel
+from pydantic import BaseModel
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
@@ -20,3 +21,7 @@ class ExpenseCreate(BaseModel):
     paid_status: str
     notes: str
     source: str
+
+class BudgetCreate(BaseModel):
+    user_email: str
+    monthly_budget: float

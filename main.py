@@ -14,6 +14,8 @@ import os
 from dotenv import load_dotenv 
 from fastapi import UploadFile, File
 from gemini_service import extract_from_image
+from models import Budget
+from schemas import BudgetCreate
 
 
 load_dotenv()
@@ -99,5 +101,38 @@ def get_expenses(user_email: str, db: Session = Depends(get_db)):
     return expenses
 
 
+@app.post("/budget")
+def set_budget(data: BudgetCreate, db: Session = Depends(get_db)):
+
+    existing = db.query(Budget).filter(
+        Budget.user_email == data.user_email
+    ).first()
+
+    if existing:
+        existing.monthly_budget = data.monthly_budget
+    else:
+        new_budget = Budget(
+            user_email=data.user_email,
+            monthly_budget=data.monthly_budget
+        )
+        db.add(new_budget)
+
+    db.commit()
+
+    return {"message": "Budget saved"}
+
+@app.get("/budget")
+def get_budget(user_email: str, db: Session = Depends(get_db)):
+
+    budget = db.query(Budget).filter(
+        Budget.user_email == user_email
+    ).first()
+
+    if not budget:
+        return {"monthly_budget": 0}
+
+    return {
+        "monthly_budget": budget.monthly_budget
+    }
 
 
