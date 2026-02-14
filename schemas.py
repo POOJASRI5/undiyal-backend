@@ -7,6 +7,7 @@ class UserCreate(BaseModel):
     college: str
     city: str
     state: str
+    available_balance: float = 0 
 
 class UserLogin(BaseModel):
     email: EmailStr

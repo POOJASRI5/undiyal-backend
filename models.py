@@ -15,6 +15,7 @@ class User(Base):
     college = Column(String)
     city = Column(String)
     state = Column(String)
+    available_balance = Column(Float, default=0)
 
 class Expense(Base):
     __tablename__ = "expenses"

@@ -19,12 +19,14 @@ def create_user(db: Session, user):
         return None
 
     new_user = models.User(
-        email=user.email,
-        password=hash_password(user.password),
-        college=user.college,
-        city=user.city,
-        state=user.state
-    )
+    email=user.email,
+    password=hash_password(user.password),
+    college=user.college,
+    city=user.city,
+    state=user.state,
+    available_balance=user.available_balance
+)
+
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
