@@ -15,7 +15,7 @@ import google.generativeai as genai
 from dotenv import load_dotenv 
 from gemini_service import model
 from fastapi import UploadFile, File
-
+from gemini_service import extract_from_image
 
 
 load_dotenv()
@@ -86,12 +86,9 @@ async def test_gemini(file: UploadFile = File(...)):
     image_bytes = await file.read()
     image = Image.open(io.BytesIO(image_bytes))
 
-    response = model.generate_content([
-        "Extract bill details",
-        image
-    ])
+    result = extract_from_image(image)
 
-    return {"result": response.text}
+    return {"result": result}
 
 
 
