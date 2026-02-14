@@ -16,6 +16,8 @@ from fastapi import UploadFile, File
 from gemini_service import extract_from_image
 from models import Budget
 from schemas import BudgetCreate
+from models import User
+from pydantic import BaseModel
 
 
 load_dotenv()
@@ -135,4 +137,36 @@ def get_budget(user_email: str, db: Session = Depends(get_db)):
         "monthly_budget": budget.monthly_budget
     }
 
+@app.get("/user/profile")
+def get_user_profile(email: str, db: Session = Depends(get_db)):
+
+    user = db.query(User).filter(User.email == email).first()
+
+    if not user:
+        return {"message": "User not found"}
+
+    return {
+        "email": user.email,
+        "available_balance": user.available_balance
+    }
+
+
+
+class BalanceUpdate(BaseModel):
+    email: str
+    available_balance: float
+
+
+@app.put("/user/balance")
+def update_balance(data: BalanceUpdate, db: Session = Depends(get_db)):
+
+    user = db.query(User).filter(User.email == data.email).first()
+
+    if not user:
+        return {"message": "User not found"}
+
+    user.available_balance = data.available_balance
+    db.commit()
+
+    return {"message": "Balance updated"}
 
