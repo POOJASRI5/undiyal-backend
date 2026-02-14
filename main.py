@@ -173,11 +173,3 @@ def update_balance(data: BalanceUpdate, db: Session = Depends(get_db)):
     return {"message": "Balance updated"}
 
 
-@app.get("/fix-db")
-def fix_db(db: Session = Depends(get_db)):
-    db.execute(text("""
-        ALTER TABLE users
-        ADD COLUMN IF NOT EXISTS available_balance FLOAT DEFAULT 0;
-    """))
-    db.commit()
-    return {"message": "DB updated"}
