@@ -19,6 +19,7 @@ from schemas import BudgetCreate
 from models import User
 from pydantic import BaseModel
 from sqlalchemy import text
+from gemini_service import client
 
 
 
@@ -172,4 +173,38 @@ def update_balance(data: BalanceUpdate, db: Session = Depends(get_db)):
 
     return {"message": "Balance updated"}
 
+
+@app.get("/ai/suggestions")
+def get_ai_suggestions(user_email: str, db: Session = Depends(get_db)):
+
+    expenses = db.query(Expense).filter(
+        Expense.user_email == user_email
+    ).all()
+
+    if not expenses:
+        return {"suggestions": "No expenses found yet."}
+
+    total_spent = sum(e.amount for e in expenses)
+
+    category_total = {}
+    for e in expenses:
+        category_total[e.category] = category_total.get(e.category, 0) + e.amount
+
+    prompt = f"""
+    User spending summary:
+
+    Total spent: {total_spent}
+    Category spending: {category_total}
+
+    Give:
+    1. General saving tips
+    2. Personalized saving advice
+    3. Beginner investment suggestions
+
+    Keep response short and practical.
+    """
+
+    result = get_saving_suggestions(prompt)
+
+    return {"suggestions": result}
 
