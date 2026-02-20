@@ -20,7 +20,6 @@ from schemas import BudgetCreate
 from models import User
 from pydantic import BaseModel
 from sqlalchemy import text
-from gemini_service import client
 
 
 
